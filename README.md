@@ -1,37 +1,81 @@
 # gt915l
 
-#### 介绍
-玫瑰科技 GT915L 的 1024*600 的触摸液晶屏
+## 简介
 
-#### 软件架构
-软件架构说明
+gt915l 软件包提供了使用触摸芯片 gt915l 基本功能，并且本软件包已经对接到了 Touch 框架，通过 Touch 框架，开发者可以快速的将此触摸芯片驱动起来。
+## 支持情况
 
+| 包含设备           | 触摸芯片 |
+| ----------------     | -------- |
+| **通讯接口**      |          |
+| IIC              | √        |
+| **工作模式**     |          |
+| 中断             | √        |
+| 轮询             |   √       |
 
-#### 安装教程
+## 使用说明
 
-1.  xxxx
-2.  xxxx
-3.  xxxx
+### 依赖
 
-#### 使用说明
+- RT-Thread 4.0.0+
+- Touch 组件
+- I2C 驱动：gt9175l设备使用 I2C 进行数据通讯，需要系统 I2C 驱动支持；
 
-1.  xxxx
-2.  xxxx
-3.  xxxx
+### 获取软件包
 
-#### 参与贡献
+使用 gt915l软件包需要在 RT-Thread 的包管理中选中它，具体路径如下：
 
-1.  Fork 本仓库
-2.  新建 Feat_xxx 分支
-3.  提交代码
-4.  新建 Pull Request
+```
+RT-Thread online packages  --->
+  peripheral libraries and drivers  --->
+    touch drivers  --->
+      gt915l: touch ic gt915l for rt-thread
+              Version (latest)  --->
+```
+**Version**：软件包版本选择
 
+### 使用软件包
 
-#### 特技
+gt915l软件包初始化函数如下所示：
 
-1.  使用 Readme\_XXX.md 来支持不同的语言，例如 Readme\_en.md, Readme\_zh.md
-2.  Gitee 官方博客 [blog.gitee.com](https://blog.gitee.com)
-3.  你可以 [https://gitee.com/explore](https://gitee.com/explore) 这个地址来了解 Gitee 上的优秀开源项目
-4.  [GVP](https://gitee.com/gvp) 全称是 Gitee 最有价值开源项目，是综合评定出的优秀开源项目
-5.  Gitee 官方提供的使用手册 [https://gitee.com/help](https://gitee.com/help)
-6.  Gitee 封面人物是一档用来展示 Gitee 会员风采的栏目 [https://gitee.com/gitee-stars/](https://gitee.com/gitee-stars/)
+```
+int rt_hw_gt915l_init(const char *name, struct rt_touch_config *cfg)
+```
+
+该函数需要由用户调用，函数主要完成的功能有，
+
+- 设备配置和初始化（根据传入的配置信息，配置接口设备和中断引脚）；
+- 注册相应的传感器设备，完成 gt915l设备的注册；
+
+#### 初始化示例
+
+```.c
+int rt_hw_gt915l_port(void)
+{
+    struct rt_touch_config config;
+    rt_uint8_t rst;
+    
+    rst = GT915L_RST_PIN;
+    config.dev_name = "i2c1";
+    config.irq_pin.pin  = GT915L_IRQ_PIN;
+    config.irq_pin.mode = PIN_MODE_INPUT_PULLDOWN;
+    config.user_data = &rst;
+
+    rt_hw_gt915L_init("gt", &config);
+
+    return 0;
+}
+INIT_ENV_EXPORT(rt_hw_gt915L_port);
+```
+
+## 注意事项
+
+暂无
+
+## 联系人信息
+
+维护人:
+
+- [tyustli](https://github.com/tyustli) 
+
+- 主页：<https://github.com/RT-Thread-packages/gt915l>
